@@ -1,5 +1,21 @@
 from PIL import Image, ImageDraw, ImageFont
 
+global COURS_TEXT_COLOR
+COURS_TEXT_COLOR = (54, 57, 62)
+
+global CADRE_COLOR
+CADRE_COLOR = (30, 33, 36)
+
+global BG_AGENDA_COLOR
+BG_AGENDA_COLOR = (255, 255, 255)
+
+global BG_COURS_COLOR
+BG_COURS_COLOR = (0, 180, 216, 200)
+# (191, 210, 0)
+# (0, 145, 173)
+# (48, 199, 40, 200)
+
+
 def initialize_agenda(size_x, size_y, liste_cours):
     """Initialiser une nouvelle image de taille size_x par size_y représentant l'agenda liste_cours.
 
@@ -9,7 +25,7 @@ def initialize_agenda(size_x, size_y, liste_cours):
     :return: l'image initialisée
     """
     # initialisation image
-    agenda_picture = Image.new("RGB", (size_x, size_y), color=(255, 255, 255))
+    agenda_picture = Image.new("RGB", (size_x, size_y), color=BG_AGENDA_COLOR)
     # déclaration d'un objet de dessin
     d = ImageDraw.Draw(agenda_picture,"RGB")
 
@@ -17,16 +33,16 @@ def initialize_agenda(size_x, size_y, liste_cours):
     myFont = ImageFont.truetype("edt_utils/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
 
     # cadre : ligne verticale à gauche et ligne horizontale en haut
-    d.line([75, 50, size_x,50], fill=(0,0,0), width=2)
-    d.line([75, 50, 75, size_y], fill=(0, 0, 0), width=2)
+    d.line([75, 50, size_x,50], fill=CADRE_COLOR, width=2)
+    d.line([75, 50, 75, size_y], fill=CADRE_COLOR, width=2)
 
     # colonnes entre chaque jours
     for x_column in range(75, size_x, 225):
-        d.line([x_column, 25, x_column, size_y], fill=(0,0,0), width=2)
+        d.line([x_column, 25, x_column, size_y], fill=CADRE_COLOR, width=2)
 
     # lignes horizontales de la pause pour manger 12:00 - 13:00
-    d.line((75, 550, size_x, 550), fill=(0,0,0), width=2)
-    d.line((75, 675, size_x, 675), fill=(0,0,0), width=2)
+    d.line((75, 550, size_x, 550), fill=CADRE_COLOR, width=2)
+    d.line((75, 675, size_x, 675), fill=CADRE_COLOR, width=2)
 
     heure = 8 # compteur de l'heure de la journée
     # affichage des heures
@@ -37,13 +53,13 @@ def initialize_agenda(size_x, size_y, liste_cours):
         else:
             string_heure = str(heure)
         # dessin de l'heure
-        d.text((5, y_hour), string_heure + "h00", fill=(0,0,0), font=myFont)
+        d.text((5, y_hour), string_heure + "h00", fill=CADRE_COLOR, font=myFont)
         # incrémentation de l'heure
         heure += 1
 
     # tirets horizontaux devant les heures
     for y_hour in range(50, size_y, 125):
-        d.line((70, y_hour, 75, y_hour), fill=(0,0,0), width=2)
+        d.line((70, y_hour, 75, y_hour), fill=CADRE_COLOR, width=2)
 
 
     # calcul du premier jour de la semaine
@@ -56,7 +72,7 @@ def initialize_agenda(size_x, size_y, liste_cours):
 
     # affichage des noms des jours de la semaine
     for x_jour in range(80, size_x, 225):
-        d.text((x_jour, 22), liste_jours[liste_jours_indexe] + " " + str(premier_jour + liste_jours_indexe) + "/" + str(liste_cours[0][0]).split("-")[1], fill=(0,0,0), font=myFont)
+        d.text((x_jour, 22), liste_jours[liste_jours_indexe] + " " + str(premier_jour + liste_jours_indexe) + "/" + str(liste_cours[0][0]).split("-")[1], fill=CADRE_COLOR, font=myFont)
         liste_jours_indexe += 1
 
     return agenda_picture
@@ -96,7 +112,7 @@ def draw_cours(agenda_picture, cours):
 
 
     # dessin d'un rectangle aux coordonnées du cours
-    d.rectangle((x0, y0, x1, y1), fill=(48, 199, 40, 200), outline=(0, 0, 0), width=2)
+    d.rectangle((x0, y0, x1, y1), fill=BG_COURS_COLOR, outline=CADRE_COLOR, width=2)
 
 
     # extraction du nom de la ressource (il contient en première position le numéro de la ressource, qui ne nous intéresse pas)
@@ -120,7 +136,7 @@ def draw_cours(agenda_picture, cours):
             groupes += nom_groupe[-2:] + " "
 
     # dessin des informations du cours (Ressource, Nom de la ressource, salle, type de cours)
-    d.multiline_text(((x0+x1)/2, (y0+y1)/2), cours[5] + " " + cours[4] + "\n" + nom_ressource.capitalize() + "\n" + salle + groupes, fill=(0, 0, 0), font=myFont, anchor="mm", align="center", spacing=10)
+    d.multiline_text(((x0+x1)/2, (y0+y1)/2), cours[5] + " " + cours[4] + "\n" + nom_ressource.capitalize() + "\n" + salle + groupes, fill=COURS_TEXT_COLOR, font=myFont, anchor="mm", align="center", spacing=10)
 
 
 def draw_liste_cours(agenda_picture, liste_cours):
