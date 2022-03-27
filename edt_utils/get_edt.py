@@ -1,5 +1,7 @@
+import datetime
 from ics import Calendar
 import requests
+import edt_utils.draw_edt as de
 
 # dictionnaire contenant les groupes de S2 et leur identifiant de "resources" dans l'url de ADE
 # chaque identifiant désigne un emploi du temps
@@ -11,19 +13,17 @@ id_edt_groupe = {
     'C1' : 41827,
     'C2' : 41828,
     'D1' : 41830,
-    'D2' : 41831
+    'D2' : 41831,
+    'S0' : 41200
 }
 
-
-def load_edt(resources, first_date, last_date):
+def load_edt(resources, first_date):
     """Récupérer un emploi du temps ADE sous format iCal et récupérer ses évènements dans une liste.
 
     :param resources: le numéro de l'argument resources, correspond à l'emploi du temps désiré.
     :type resources: integer
     :param first_date: le jour de début de semaine
-    :type first_date: str
-    :param last_date: le jour de fin de semaine (semaine de 5 jours de travail)
-    :type last_date: str
+    :type first_date: datetime.time
 
     :returns: une liste de listes. Chaque sous liste caractérise un évènement (un cours dans la semaine).
     Forme des sous listes : [date, heure_début, durée, salle, type_de_cours, numéro_ressource, nom_ressource, nom_prof, groupes participants]
@@ -33,7 +33,7 @@ def load_edt(resources, first_date, last_date):
     param_requete = {
         "resources" : resources,
         "firstDate" : first_date,
-        "lastDate" : last_date
+        "lastDate" : first_date + datetime.timedelta(4)
     }
 
     # requête récupérant le calendrier iCal, passage du dictionnaire param_requete en paramètres de l'URL
@@ -76,6 +76,7 @@ def load_edt(resources, first_date, last_date):
         new_cours = [event.begin.date(),
                     event.begin.to('Europe/Paris').time(),
                     event.duration,
+                    event.location,
                     event.name.split(" ")[1],
                     event.name.split(" ")[0],
                     nom_ressource,
@@ -102,6 +103,71 @@ def affiche_liste_cours(liste):
         print()
 
 
+def select_current_semaine():
+    """Sélectionner le premier jour de la semaine de travail dans laquelle on se trouve. Si on est en week-end, récupération du premier jour de la semaine suivante.
+
+    :rtype: datetimde.date
+    :return: le premier d'une semaine de travail
+    """
+    # récupération du premier jour de la semaine actuelle
+    deb_sem = datetime.date.today() - datetime.timedelta(datetime.date.today().weekday())
+
+    # si l'on est en week-end, ajout de 7 jours
+    if datetime.date.today().weekday() > 4:
+        deb_sem = deb_sem + datetime.timedelta(7)
+
+    return deb_sem
+
+def select_semaine(nb_sem_decale: int):
+    """Sélectionner la semaine voulue à partir de la semaine de travail actuelle. On décalle de nb_sem_decale semaines la semaine sélectionnée.
+
+    :param nb_sem_decale: le nombre de semaines de décallage
+    :return: la semaine voulue
+    """
+    sem_select = select_current_semaine() + datetime.timedelta(7 * nb_sem_decale)
+
+    return sem_select
+
+def select_agenda(nom_groupe, nb_sem_decale: int):
+    """Générer l'image de l'agenda et la sauver.
+    L'image est créée pour le groupe nom_groupe à la semaine courante + nb_sem_decale
+
+    :param nom_groupe: le nom du groupe
+    :param nb_sem_decale: le décalage de semaine
+    :return:
+    """
+    # récupération des données de l'agenda iCal de ADE
+    data = load_edt(id_edt_groupe[nom_groupe], select_semaine(nb_sem_decale))
+
+    # détermination de l'heure de début du dernier cours
+    cours_max = data[0][1]
+    # parcours complet des cours et comparaisons des heures de début de cours
+    for cours in data:
+        if cours[1] > cours_max:
+            cours_max = cours[1]
+
+    print(datetime.time(17, 0, 0, 0))
+
+    if cours_max > datetime.time(17, 0, 0, 0):
+        y_max = 1700
+    elif cours_max > datetime.time(16, 0, 0, 0):
+        y_max = 1450
+    else:
+        y_max = 1200
+
+
+    # initialisation de l'agenda
+    current_agenda = de.initialize_agenda(1200, y_max, data)
+
+    # dessin des cours
+    de.draw_liste_cours(current_agenda, data)
+
+    # sauvegarde de l'image
+    current_agenda.save("edt_utils/agenda.png")
+
+
 # opérations de tests utilisés au long du développement de ce fichier
-# ma_liste = load_edt(id_edt_groupe['A2'],"2022-03-21","2022-03-25")
+# ma_liste = load_edt(id_edt_groupe['A2'],select_current_semaine())
 # affiche_liste_cours(ma_liste)
+
+# select_agenda("A2", 0)

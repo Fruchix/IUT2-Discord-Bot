@@ -14,7 +14,7 @@ def initialize_agenda(size_x, size_y, liste_cours):
     d = ImageDraw.Draw(agenda_picture,"RGB")
 
     # initialisation police
-    myFont = ImageFont.truetype("fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
+    myFont = ImageFont.truetype("edt_utils/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
 
     # cadre : ligne verticale à gauche et ligne horizontale en haut
     d.line([75, 50, size_x,50], fill=(0,0,0), width=2)
@@ -73,7 +73,7 @@ def draw_cours(agenda_picture, cours):
     d = ImageDraw.Draw(agenda_picture, "RGBA")
 
     # initialisation police
-    myFont = ImageFont.truetype("fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 24)
+    myFont = ImageFont.truetype("edt_utils/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 24)
 
 
     # détermination des coordonnées du cours grâce à la valeur du jour de la semaine, de l'heure du cours et de la durée
@@ -111,8 +111,16 @@ def draw_cours(agenda_picture, cours):
     # suppression du dernier retour à la ligne
     salle = salle[:-1]
 
+    # extraction des noms des groupes de TP présents à ce cours
+    if len(cours[-1]) > 6:
+        groupes = "\nPromo"
+    else:
+        groupes = "\n"
+        for nom_groupe in cours[-1]:
+            groupes += nom_groupe[-2:] + " "
+
     # dessin des informations du cours (Ressource, Nom de la ressource, salle, type de cours)
-    d.multiline_text(((x0+x1)/2, (y0+y1)/2), cours[5] + " " + cours[4] + "\n" + nom_ressource.capitalize() + "\n" + salle, fill=(0, 0, 0), font=myFont, anchor="mm", align="center", spacing=10)
+    d.multiline_text(((x0+x1)/2, (y0+y1)/2), cours[5] + " " + cours[4] + "\n" + nom_ressource.capitalize() + "\n" + salle + groupes, fill=(0, 0, 0), font=myFont, anchor="mm", align="center", spacing=10)
 
 
 def draw_liste_cours(agenda_picture, liste_cours):
