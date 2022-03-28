@@ -1,3 +1,5 @@
+import datetime
+
 from PIL import Image, ImageDraw, ImageFont
 
 global COURS_TEXT_COLOR
@@ -65,14 +67,14 @@ def initialize_agenda(size_x, size_y, liste_cours):
     # calcul du premier jour de la semaine
     # on récupère la date du premier cours dans liste_cours et on soustrait alors la valeur du jour au numéro du jour
     # la valeur du jour vaut 0 à 6 respectivement de lundi à dimanche
-    premier_jour = int(str(liste_cours[0][0]).split("-")[2]) - liste_cours[0][0].weekday()
+    premier_jour = liste_cours[0][0] - datetime.timedelta(liste_cours[0][0].weekday())
 
     liste_jours = ["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"]   # liste contenant les jours de la semaine
     liste_jours_indexe = 0  # indexe permettant de parcourir la liste des jours de la semaine
 
     # affichage des noms des jours de la semaine
     for x_jour in range(80, size_x, 225):
-        d.text((x_jour, 22), liste_jours[liste_jours_indexe] + " " + str(premier_jour + liste_jours_indexe) + "/" + str(liste_cours[0][0]).split("-")[1], fill=CADRE_COLOR, font=myFont)
+        d.text((x_jour, 22), liste_jours[liste_jours_indexe] + " " + str((premier_jour + datetime.timedelta(liste_jours_indexe)).day) + "/" + str((premier_jour + datetime.timedelta(liste_jours_indexe)).month), fill=CADRE_COLOR, font=myFont)
         liste_jours_indexe += 1
 
     return agenda_picture

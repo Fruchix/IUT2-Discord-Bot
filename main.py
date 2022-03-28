@@ -16,6 +16,19 @@ async def on_ready():
     print("Bot opérationnel.")
 
 
+@bot.event
+async def on_message(message: discord.Message):
+    if message.content == "Un hôtel ?" or message.content == "Un hotel ?":
+        await message.add_reaction("🇹")
+        await message.add_reaction("🇷")
+        await message.add_reaction("🇮")
+        await message.add_reaction("🇻")
+        await message.add_reaction("🇦")
+        await message.add_reaction("🇬")
+        await message.add_reaction("🇴")
+
+    await bot.process_commands(message)
+
 @bot.command(name='edt')
 async def send_edt_picture(ctx, sem_decal: int = 0, groupe_tp: str = ""):
     """Envoyer une image d'un agenda.

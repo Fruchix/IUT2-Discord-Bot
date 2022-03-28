@@ -100,7 +100,6 @@ def affiche_liste_cours(liste):
         for element in cours:
             print(element, end='')
             print("    ", end="")
-        print()
 
 
 def select_current_semaine():
@@ -146,8 +145,7 @@ def select_agenda(nom_groupe, nb_sem_decale: int):
         if cours[1] > cours_max:
             cours_max = cours[1]
 
-    print(datetime.time(17, 0, 0, 0))
-
+    # adapter la hauteur de la page à l'heure de début du dernier cours
     if cours_max > datetime.time(17, 0, 0, 0):
         y_max = 1700
     elif cours_max > datetime.time(16, 0, 0, 0):
