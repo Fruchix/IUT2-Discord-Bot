@@ -1,6 +1,7 @@
 import discord
-from discord.ext import commands
+import requests
 import os
+from discord.ext import commands
 from dotenv import load_dotenv
 
 import edt_utils.get_edt as ge
@@ -93,6 +94,31 @@ def select_role(liste_roles):
         if role.name.find("S0") != -1:
             return "S0"
 
+@bot.command(name="systemload")
+async def iut_system_load(ctx):
+    data = requests.get("https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php")
+    text = data.text
 
+    etat = "État des stations linux le " + text.split("État le ")[1].split("<pre>")[0]
+
+    listStations = text.split("<pre>")[1].split("</pre>")[0].splitlines()[1:]
+    listStationsRecoupee = []
+
+    for ligne in listStations:
+        if ligne[40] == ",":
+            listStationsRecoupee.append(ligne[:16] + "  " + ligne[33:40])
+        else:
+            listStationsRecoupee.append(ligne[:16] + "  " + ligne[33:39])
+
+    string1 = "\n".join(ligne for ligne in listStationsRecoupee[0:len(listStationsRecoupee)//4])
+    string2 = "\n".join(ligne for ligne in listStationsRecoupee[len(listStationsRecoupee) // 4:len(listStationsRecoupee) // 2])
+    string3 = "\n".join(ligne for ligne in listStationsRecoupee[len(listStationsRecoupee) // 2:len(listStationsRecoupee) // 4 * 3])
+    string4 = "\n".join(ligne for ligne in listStationsRecoupee[len(listStationsRecoupee) // 4 * 3:len(listStationsRecoupee)])
+
+    await ctx.channel.send(etat)
+    await ctx.channel.send(string1)
+    await ctx.channel.send(string2)
+    await ctx.channel.send(string3)
+    await ctx.channel.send(string4)
 
 bot.run(os.getenv("TOKEN"))
