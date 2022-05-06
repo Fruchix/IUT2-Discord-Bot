@@ -11,6 +11,7 @@ import edt_utils.get_edt as ge
 load_dotenv(dotenv_path="config")
 
 bot = commands.Bot(command_prefix="!")
+bot.load_extension("Time")
 
 @bot.event
 async def on_ready():
@@ -30,7 +31,7 @@ async def on_message(message: discord.Message):
 
     await bot.process_commands(message)
 
-@bot.command(name='edt')
+@bot.command(name='edt_prov')
 async def send_edt_picture(ctx, sem_decal: int = 0, groupe_tp: str = ""):
     """Envoyer une image d'un agenda.
     Sélection de l'agenda du groupe voulu selon le rôle de la personne ou du paramètre donné.
