@@ -19,9 +19,9 @@ def load_edt(resources, first_date):
     """
     # dictionnaire des paramètres de la requête récupérant le calendrier iCal. On utilise les paramètres de la fonction
     param_requete = {
-        "resources" : resources,
-        "firstDate" : first_date,
-        "lastDate" : first_date + datetime.timedelta(4)
+        "resources": resources,
+        "firstDate": first_date,
+        "lastDate": first_date + datetime.timedelta(4)
     }
 
     # requête récupérant le calendrier iCal, passage du dictionnaire param_requete en paramètres de l'URL
@@ -104,6 +104,7 @@ def select_current_semaine() -> datetime.date:
 
     return deb_sem
 
+
 def select_semaine(nb_sem_decale: int) -> datetime.date:
     """Sélectionner la semaine voulue à partir de la semaine de travail actuelle. On décalle de nb_sem_decale semaines la semaine sélectionnée.
 
@@ -114,7 +115,8 @@ def select_semaine(nb_sem_decale: int) -> datetime.date:
 
     return sem_select
 
-def get_agenda(id_groupe, nb_sem_decale: int):
+
+def generate_agenda(id_groupe, nb_sem_decale: int):
     """Générer l'image de l'agenda et la sauver.
     L'image est créée pour le groupe nom_groupe à la semaine courante + nb_sem_decale
 
