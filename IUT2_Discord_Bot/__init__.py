@@ -1,0 +1,5 @@
+__productname__ = "IUT2_Discord_Bot"
+__version__ = "0.1.0"
+__description__ = "A Discord bot designed for the BUT Informatique Discord's Servers."
+__url__ = "https://github.com/"
+__author__ = "Mélian Fruchart"

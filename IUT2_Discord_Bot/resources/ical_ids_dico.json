@@ -1,0 +1,47 @@
+{
+  "ical_ids_dico": [
+    {
+      "S1": {
+        "serveur": null,
+        "channel": null,
+        "ical_ids": {
+          "A1": 40435,
+          "A2": 40436,
+          "B1": 40437
+        }
+      },
+
+      "S2": {
+        "serveur": null,
+        "channel": null,
+        "ical_ids": {
+          "A1" : 41821,
+          "A2" : 41822,
+          "B1" : 41824,
+          "B2" : 41825,
+          "C1" : 41827,
+          "C2" : 41828,
+          "D1" : 41830,
+          "D2" : 41831,
+          "S0" : 41200
+        }
+      },
+
+      "S3": {
+        "serveur": null,
+        "channel": null,
+        "ical_ids": {
+
+        }
+      },
+
+      "S4": {
+        "serveur": null,
+        "channel": null,
+        "ical_ids": {
+
+        }
+      }
+    }
+  ]
+}
