@@ -20,7 +20,8 @@ async def selecteur_role(ctx: lightbulb.context.SlashContext):
 
     await ctx.respond(f"Sélecteur de rôles créé dans le salon <#{ctx.options.channel.id}>", delete_after=10)
 
-    my_embed = hikari.Embed(title=ctx.options.titre, color=hikari.Color.of((33, 186, 217)))
+    my_embed = hikari.Embed(title=ctx.options.titre,
+                            color=hikari.Color.of((33, 186, 217)))
     message = await ctx.bot.rest.create_message(channel=ctx.options.channel, components=view.build(), embed=my_embed)
     view.start(message)
 

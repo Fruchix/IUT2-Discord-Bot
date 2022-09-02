@@ -5,6 +5,7 @@ import lightbulb
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
 from IUT2_Discord_Bot.edt.get_edt import generate_agenda, select_semaine
 
+
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
 @lightbulb.option("semaine", "La semaine souhaitée (0 = semaine actuelle, 1 = semaine suivante, -1 = semaine précédente, ...)", type=int, default=0, required=False)
 @lightbulb.command("edt", "Afficher un emploi du temps")
