@@ -35,7 +35,7 @@ def initialize_agenda(size_x, size_y, liste_cours):
     myFont = ImageFont.truetype("edt/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
 
     # cadre : ligne verticale à gauche et ligne horizontale en haut
-    d.line([75, 50, size_x,50], fill=CADRE_COLOR, width=2)
+    d.line([75, 50, size_x, 50], fill=CADRE_COLOR, width=2)
     d.line([75, 50, 75, size_y], fill=CADRE_COLOR, width=2)
 
     # colonnes entre chaque jours
