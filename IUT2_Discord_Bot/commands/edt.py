@@ -2,8 +2,8 @@ import datetime
 import hikari
 import lightbulb
 
+from IUT2_Discord_Bot.edt.get_agenda import generate_agenda, select_semaine
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
-from IUT2_Discord_Bot.edt.get_edt import generate_agenda, select_semaine
 
 
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
@@ -50,7 +50,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
             title="Emploi du temps",
             color=hikari.Color.of((33, 186, 217))
         )
-        .add_field("Groupe", str(ctx.options.groupe), inline=True)
+        .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " + str((select_semaine((ctx.options.semaine)) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
         .set_image("edt/agenda.png")
     )
