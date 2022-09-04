@@ -2,8 +2,8 @@ import datetime
 import hikari
 import lightbulb
 
-from IUT2_Discord_Bot.edt.get_agenda import generate_agenda, select_semaine
-from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
+from edt.get_agenda import generate_agenda, select_semaine
+from edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
 
 
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)

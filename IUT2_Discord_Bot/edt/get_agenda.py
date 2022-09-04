@@ -2,8 +2,8 @@ import requests
 import datetime
 import ics
 
-from IUT2_Discord_Bot.edt.edt_utils import select_semaine
-from IUT2_Discord_Bot.edt.draw_agenda import draw_edt
+from edt.edt_utils import select_semaine
+from edt.draw_agenda import draw_edt
 
 
 def load_edt(resource: int, first_date: datetime.date):

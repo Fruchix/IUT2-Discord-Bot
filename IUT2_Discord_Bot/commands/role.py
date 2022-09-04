@@ -1,8 +1,8 @@
 import hikari
 import lightbulb
 
-from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
-from IUT2_Discord_Bot.utils.json_utils import append_element_json_array
+from guilds.RoleViews import get_role_view
+from utils.json_utils import append_element_json_array
 
 
 @lightbulb.add_checks(lightbulb.checks.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
