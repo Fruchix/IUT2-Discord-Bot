@@ -57,9 +57,47 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
     return
 
 
+@lightbulb.option("promotion", "La promotion dont il faut afficher le calendrier.", choices=["1A", "2A", "LP"], default="", required=False)
+@lightbulb.command("calendar", "Afficher le calendrier de l'année.")
+@lightbulb.implements(lightbulb.commands.SlashCommand)
+async def calendar(ctx: lightbulb.context.SlashContext):
+
+    # si aucun paramètre de promotion n'a été donné et que la commande n'est pas effectuée dans un serveur
+    # alors renvoit message erreur
+    # sinon autodétection du calendrier à envoyer en fonction du serveur
+    if ctx.options.promotion == "" and ctx.guild_id is None:
+        await ctx.respond("Veuillez préciser la promotion souhaitée.")
+        return
+    elif ctx.options.promotion == "":
+        if ctx.guild_id == 994181854058000416:
+            promotion = "1A"
+        elif ctx.guild_id == 890968871845122108:
+            promotion = "2A"
+        else:
+            await ctx.respond("Veuillez préciser la promotion souhaitée.")
+            return
+    else:
+        promotion = ctx.options.promotion
+
+    try:
+        await ctx.respond(
+            hikari.Embed(
+                title="Calendrier",
+                color=hikari.Color.of((33, 186, 217))
+            )
+            .set_image(f"resources/calendrier-2022-2023-{promotion}.png")
+        )
+        return
+    except FileNotFoundError:
+        await ctx.respond("Le fichier recherché n'est pas disponible.")
+        return
+
+
 def load(bot: lightbulb.BotApp) -> None:
     bot.command(edt)
+    bot.command(calendar)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
     bot.remove_command(bot.get_slash_command("edt"))
+    bot.remove_command(bot.get_slash_command("calendar"))
