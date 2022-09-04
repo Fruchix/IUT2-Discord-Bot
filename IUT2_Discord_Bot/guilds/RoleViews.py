@@ -61,14 +61,14 @@ class RoleView1A(miru.View):
             await ctx.member.remove_role(id_role)
 
         if select.values[0] == "Aucun":
-            await ctx.respond("Tes rôles de groupe ont été supprimés.", flags=hikari.MessageFlag.EPHEMERAL)
+            await ctx.respond("Vos rôles de groupe ont été supprimés.", flags=hikari.MessageFlag.EPHEMERAL)
             return
 
         # ajout des nouveaux roles de l'utilisateur, sélectionnés dans le menu (on ajoute un groupe TP et un groupe TD)
         for id_role in self.roles_group.get(select.values[0]):
             await ctx.member.add_role(id_role)
 
-        await ctx.respond(f"Tu as désormais les rôles <@&{self.roles_group.get(select.values[0])[0]}> et <@&{self.roles_group.get(select.values[0])[1]}> !", flags=hikari.MessageFlag.EPHEMERAL)
+        await ctx.respond(f"Vous avez désormais les rôles <@&{self.roles_group.get(select.values[0])[0]}> et <@&{self.roles_group.get(select.values[0])[1]}> !", flags=hikari.MessageFlag.EPHEMERAL)
 
 
 class RoleView2A(miru.View):
@@ -115,12 +115,12 @@ class RoleView2A(miru.View):
             await ctx.member.remove_role(id_role)
 
         if select.values[0] == "Aucun":
-            await ctx.respond("Tes rôles de groupe ont été supprimés.", flags=hikari.MessageFlag.EPHEMERAL)
+            await ctx.respond("Vos rôles de groupe ont été supprimés.", flags=hikari.MessageFlag.EPHEMERAL)
             return
 
         # ajout des nouveaux roles de l'utilisateur, sélectionnés dans le menu (on ajoute un groupe TP et un groupe TD)
         for id_role in self.roles_group.get(select.values[0]):
             await ctx.member.add_role(id_role)
 
-        await ctx.respond(f"Tu as désormais les rôles <@&{self.roles_group.get(select.values[0])[0]}> et <@&{self.roles_group.get(select.values[0])[1]}> !", flags=hikari.MessageFlag.EPHEMERAL)
+        await ctx.respond(f"Vous avez désormais les rôles <@&{self.roles_group.get(select.values[0])[0]}> et <@&{self.roles_group.get(select.values[0])[1]}> !", flags=hikari.MessageFlag.EPHEMERAL)
 
