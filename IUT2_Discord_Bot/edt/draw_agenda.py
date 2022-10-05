@@ -23,13 +23,17 @@ def draw_event(agenda_picture, event: ics.icalendar.Event) -> None:
     # récupération des données importantes à dessiner sur l'agenda
     titre = event.name
     profs = [p for p in event.description.split("\n") if
-             not p.__contains__("INFO") and p != '' and not p.__contains__("Exporté")]
+             not p.__contains__("INFO") and p != '' and not p.__contains__("Exporté")][1:]
     groupes = [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in event.description.split("\n")
-               if g != '' and not g.__contains__("Exporté") and g not in profs]
+               if g != '' and not g.__contains__("Exporté") and g not in profs][1:]
     salles = [s[5:] if s.__contains__("IUT2-") else s for s in
               event.location.split(",") if s != '']
     date_debut = event.begin
     duree_event = event.duration
+
+    print("Description : " + str(event.description))
+    print("Profs : " + str(profs))
+    print("Groupes : " + str(groupes))
 
     # déclaration d'un objet de dessin
     d = ImageDraw.Draw(agenda_picture, "RGB")
