@@ -9,8 +9,6 @@ import requests
 @lightbulb.command("etat_machines", "Renvoie l'état des stations Linux de l'IUT2.")
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def etat_machines(ctx: lightbulb.context.SlashContext):
-    print(ctx.options.option)
-
     # récupération de la page web l'état des machines et stockage du texte de cette page dans la variable text_page
     text_page = requests.get(
         "https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php").text
@@ -39,40 +37,36 @@ async def etat_machines(ctx: lightbulb.context.SlashContext):
         await ctx.respond("Toutes les machines sont éteintes.")
         return
 
+    def value_field(salle: int) -> str:
+        return "\n".join(
+                    "`" + machine[0] + " " + machine[1] + (" " + str(machine[2]) + (
+                        " user " if machine[2] == 1 else " users") if machine[1] == "up" else "      ") + "`" for
+                    machine in liste_machines if machine[0][7:9] == str(salle))
+
+    await ctx.respond(
+        hikari.Embed(title=etat,
+                     color=hikari.Color.of((255, 87, 51)))
+            .add_field("`Salle 25`", value_field(25), inline=True)
+            .add_field("`Salle 27`", value_field(27), inline=True)
+            .add_field("`Salle 33`", value_field(33), inline=True)
+            .add_field("`Salle 35`", value_field(35), inline=True)
+            .add_field("`Salle 37`", value_field(37), inline=True)
+            .add_field("`Salle 39`", value_field(39), inline=True)
+            .set_footer("📌 Stolen from https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php")
+    )
     if ctx.options.option != "free":
-        await ctx.respond(hikari.Embed()
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + " " + machine[1] + " " + str(machine[2]) + (
-                                             " user" if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "25") + "`", inline=True)
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + " " + machine[1] + " " + str(machine[2]) + (
-                                             " user" if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "27") + "`", inline=True)
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + " " + machine[1] + " " + str(machine[2]) + (
-                                             " user " if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "33") + "`", inline=True)
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + "\t" + machine[1] + "\t" + str(machine[2]) + (
-                                             " user" if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "35") + "`", inline=True)
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + "\t" + machine[1] + "\t" + str(machine[2]) + (
-                                             " user" if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "37") + "`", inline=True)
-                          .add_field("Machines",
-                                     "`" + "\n".join(
-                                         machine[0] + "\t" + machine[1] + "\t" + str(machine[2]) + (
-                                             " user" if machine[2] == 1 else " users") for
-                                         machine in liste_machines if machine[0][7:9] == "39"), inline=True)
-                          )
-    await ctx.respond("isbdqsd")
+        pass
+    else:
+        await ctx.respond(
+            hikari.Embed(title=etat,
+                         color=hikari.Color.of((255, 87, 51)))
+                .add_field("Machines les moins occupées",
+                           "\n".join("`" + machine[0] + " " + machine[1] + " " + str(machine[2]) + (
+                               " user" if machine[2] == 1 else " users") + "`" for
+                                           machine in sorted(liste_machines, key=lambda x: x[2])[:5])
+                           )
+                .set_footer("📌 Stolen from https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php")
+        )
 
 
 def load(bot: lightbulb.BotApp) -> None:
