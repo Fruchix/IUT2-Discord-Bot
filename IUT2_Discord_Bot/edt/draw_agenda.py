@@ -31,10 +31,6 @@ def draw_event(agenda_picture, event: ics.icalendar.Event) -> None:
     date_debut = event.begin
     duree_event = event.duration
 
-    print("Description : " + str(event.description))
-    print("Profs : " + str(profs))
-    print("Groupes : " + str(groupes))
-
     # déclaration d'un objet de dessin
     d = ImageDraw.Draw(agenda_picture, "RGB")
 
