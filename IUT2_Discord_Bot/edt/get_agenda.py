@@ -2,8 +2,8 @@ import requests
 import datetime
 import ics
 
-from edt.edt_utils import select_semaine
-from edt.draw_agenda import draw_edt
+from IUT2_Discord_Bot.edt.edt_utils import select_semaine
+from IUT2_Discord_Bot.edt.draw_agenda import draw_edt
 
 
 def load_edt(resource: int, first_date: datetime.date):
@@ -41,5 +41,5 @@ def generate_agenda(resource: int, sem_decal: int):
 
     current_agenda = draw_edt(ical=ical_agenda)
 
-    current_agenda.save("edt/agenda.png")
+    current_agenda.save("IUT2_Discord_Bot/edt/agenda.png")
 

@@ -1,8 +1,8 @@
 import hikari
 import lightbulb
 
-from guilds.RoleViews import get_role_view
-from utils.json_utils import append_element_json_array
+from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
+from IUT2_Discord_Bot.utils.json_utils import append_element_json_array
 
 
 @lightbulb.add_checks(lightbulb.checks.has_guild_permissions(hikari.Permissions.ADMINISTRATOR))
@@ -31,7 +31,7 @@ async def selecteur_role(ctx: lightbulb.context.SlashContext):
         'guild_id': ctx.guild_id
     }
 
-    append_element_json_array(selector, "selectors", "guilds/selectors.json")
+    append_element_json_array(selector, "selectors", "IUT2_Discord_Bot/guilds/selectors.json")
 
     return
 

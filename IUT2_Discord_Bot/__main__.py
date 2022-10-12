@@ -4,8 +4,8 @@ import hikari
 import lightbulb
 import miru
 from dotenv import load_dotenv
-from guilds.RoleViews import get_role_view
-from utils.json_utils import remove_element_json_array
+from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
+from IUT2_Discord_Bot.utils.json_utils import remove_element_json_array
 
 load_dotenv()
 
@@ -20,7 +20,7 @@ miru.load(bot)
 # récupération des messages dont il faut écouter les interactions
 @bot.listen()
 async def startup_views(event: hikari.StartedEvent) -> None:
-    with open("guilds/selectors.json", "r") as file:
+    with open("IUT2_Discord_Bot/guilds/selectors.json", "r") as file:
         data = json.load(file)
 
     if not data["selectors"]:
@@ -36,12 +36,12 @@ async def startup_views(event: hikari.StartedEvent) -> None:
             view.start_listener(message=selector["id"])
         except:
             # remove selectors that do not exists anymore from the json list of selectors
-            remove_element_json_array(index, "selectors", "guilds/selectors.json")
+            remove_element_json_array(index, "selectors", "IUT2_Discord_Bot/guilds/selectors.json")
     return
 
 
 # load les fichiers python contenant des commandes
-bot.load_extensions_from("./commands")
+bot.load_extensions_from("IUT2_Discord_Bot/commands")
 
 if __name__ == "__main__":
     if os.name != "nt":

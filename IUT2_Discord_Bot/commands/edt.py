@@ -2,8 +2,8 @@ import datetime
 import hikari
 import lightbulb
 
-from edt.get_agenda import generate_agenda, select_semaine
-from edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
+from IUT2_Discord_Bot.edt.get_agenda import generate_agenda, select_semaine
+from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
 
 
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
@@ -36,13 +36,9 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         await ctx.respond("Aucun groupe TP trouvé dans vos rôles." )
         return
 
-    ##################################################
-    # génération du fichier agenda.png via la fonction select_agenda(...) de get_edt
-    #    await ctx.respond("Groupe demandé : " + groupe_tp + " Semaine demandée : " + str(ctx.options.semaine))
-
+    # génération du fichier agenda.png
     generate_agenda(id_groupe_tp, ctx.options.semaine)
 
-    ##################################################
     # envoi du fichier agenda.png
 
     await ctx.respond(
@@ -52,7 +48,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         )
         .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " + str((select_semaine((ctx.options.semaine)) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
-        .set_image("edt/agenda.png")
+        .set_image("IUT2_Discord_Bot/edt/agenda.png")
     )
     return
 
@@ -67,7 +63,7 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
             title="Calendrier 2022/2023",
             color=hikari.Color.of((33, 186, 217))
         )
-        .set_image("resources/calendrier-2022-2023.png")
+        .set_image("IUT2_Discord_Bot/resources/calendrier-2022-2023.png")
     )
     return
 

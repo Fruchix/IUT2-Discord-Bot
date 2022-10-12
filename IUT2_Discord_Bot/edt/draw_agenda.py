@@ -39,8 +39,8 @@ def draw_event(agenda_picture, event: ics.icalendar.Event) -> None:
     d = ImageDraw.Draw(agenda_picture, "RGB")
 
     # initialisation police
-    title_font = ImageFont.truetype("resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 18)
-    text_font = ImageFont.truetype("resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 15)
+    title_font = ImageFont.truetype("IUT2_Discord_Bot/resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 18)
+    text_font = ImageFont.truetype("IUT2_Discord_Bot/resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 15)
 
     # détermination des coordonnées du cours grâce à la valeur du jour de la semaine, de l'heure du cours et de la durée
 
@@ -163,7 +163,7 @@ def draw_edt(ical: ics.icalendar.Calendar) -> Image:
     d = ImageDraw.Draw(agenda_picture, "RGB")
 
     # initialisation police
-    myFont = ImageFont.truetype("resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
+    myFont = ImageFont.truetype("IUT2_Discord_Bot/resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
 
     # cadre : ligne verticale à gauche et ligne horizontale en haut
     d.line([75, 50, size_x, 50], fill=CADRE_COLOR, width=2)
