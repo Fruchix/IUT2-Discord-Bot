@@ -23,9 +23,9 @@ def draw_event(agenda_picture, event: ics.icalendar.Event) -> None:
     # récupération des données importantes à dessiner sur l'agenda
     titre = event.name
     profs = [p for p in event.description.split("\n") if
-             not p.__contains__("INFO") and p != '' and not p.__contains__("Exporté")][1:]
+             not p.__contains__("INFO") and p != '' and not p.__contains__("Exporté")]
     groupes = [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in event.description.split("\n")
-               if g != '' and not g.__contains__("Exporté") and g not in profs][1:]
+               if g != '' and not g.__contains__("Exporté") and g not in profs]
     salles = [s[5:] if s.__contains__("IUT2-") else s for s in
               event.location.split(",") if s != '']
     date_debut = event.begin
@@ -159,7 +159,8 @@ def draw_edt(ical: ics.icalendar.Calendar) -> Image:
     d = ImageDraw.Draw(agenda_picture, "RGB")
 
     # initialisation police
-    myFont = ImageFont.truetype("IUT2_Discord_Bot/resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf", 20)
+    my_font = ImageFont.truetype("IUT2_Discord_Bot/resources/fonts/IBM_Plex_Sans_Arabic/IBMPlexSansArabic-Medium.ttf",
+                                 20)
 
     # cadre : ligne verticale à gauche et ligne horizontale en haut
     d.line([75, 50, size_x, 50], fill=CADRE_COLOR, width=2)
@@ -182,7 +183,7 @@ def draw_edt(ical: ics.icalendar.Calendar) -> Image:
         else:
             string_heure = str(heure)
         # dessin de l'heure
-        d.text((5, y_hour), string_heure + "h00", fill=CADRE_COLOR, font=myFont)
+        d.text((5, y_hour), string_heure + "h00", fill=CADRE_COLOR, font=my_font)
         # incrémentation de l'heure
         heure += 1
 
@@ -203,7 +204,7 @@ def draw_edt(ical: ics.icalendar.Calendar) -> Image:
                jour + " " + str((premier_jour + datetime.timedelta(idx)).day) +
                "/" + str((premier_jour + datetime.timedelta(idx)).month),
                fill=CADRE_COLOR,
-               font=myFont
+               font=my_font
                )
 
     for event in ical.events:

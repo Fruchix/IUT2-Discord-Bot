@@ -39,8 +39,6 @@ async def startup_views(event: hikari.StartedEvent) -> None:
             remove_element_json_array(index, "selectors", "IUT2_Discord_Bot/guilds/selectors.json")
     return
 
-# hello world
-
 # load les fichiers python contenant des commandes
 bot.load_extensions_from("IUT2_Discord_Bot/commands")
 
