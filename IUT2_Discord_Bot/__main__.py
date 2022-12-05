@@ -12,7 +12,7 @@ load_dotenv()
 bot = lightbulb.BotApp(
     token=os.getenv("TOKEN"),
     prefix="!",
-    intents=hikari.Intents.ALL,
+    intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT,
     default_enabled_guilds=list(map(int, os.getenv("GUILD_ID").split(","))),
 )
 miru.load(bot)

@@ -64,7 +64,9 @@ class RoleButton(miru.Button):
 async def buttonsbis(ctx: lightbulb.context.SlashContext) -> None:
 
     view = miru.View(timeout=60)
-    view.add_item(RoleButton(style=hikari.ButtonStyle.SECONDARY if 957568326211616840 not in [role.id for role in ctx.member.get_roles()] else hikari.ButtonStyle.PRIMARY, label="Role C2", role_id=957568326211616840))
+    view.add_item(RoleButton(style=hikari.ButtonStyle.SECONDARY if 957568326211616840 not in [role.id for role in ctx.member.get_roles()] else hikari.ButtonStyle.PRIMARY,
+                             label="Role C2",
+                             role_id=957568326211616840))
     resp = await ctx.respond("Choisissez un bouton !", components=view.build())
     message = await resp.message()
     view.start(message=message)
