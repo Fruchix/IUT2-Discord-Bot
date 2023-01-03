@@ -93,6 +93,6 @@ def load(bot: lightbulb.BotApp) -> None:
 
 def unload(bot: lightbulb.BotApp) -> None:
     bot.remove_command(bot.get_slash_command("ping"))
-    bot.remove_command((bot.get_slash_command("buttons")))
-    bot.remove_command((bot.get_slash_command("buttonsbis")))
-    bot.remove_command((bot.get_slash_command("infos")))
+    bot.remove_command(bot.get_slash_command("buttons"))
+    bot.remove_command(bot.get_slash_command("buttonsbis"))
+    bot.remove_command(bot.get_slash_command("infos"))
