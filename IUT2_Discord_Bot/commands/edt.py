@@ -1,6 +1,7 @@
 import datetime
 import hikari
 import lightbulb
+import sqlite3
 
 from IUT2_Discord_Bot.edt.get_agenda import generate_agenda, select_semaine
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
@@ -68,12 +69,30 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
     return
 
 
+@lightbulb.command("test", "Test de fonction")
+@lightbulb.implements(lightbulb.commands.SlashCommand)
+async def test(ctx: lightbulb.context.SlashContext):
+    # Connection object on the database
+    con = sqlite3.connect("IUT2_Discord_Bot/resources/edt.db")
+
+    # cursor object
+    cur = con.cursor()
+
+    cur.execute("SELECT * FROM salles_iut2")
+
+    res = cur.fetchall()
+
+    con.close()
+    await ctx.respond(res)
+
 
 def load(bot: lightbulb.BotApp) -> None:
     bot.command(edt)
     bot.command(calendrier)
+    bot.command(test)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
     bot.remove_command(bot.get_slash_command("edt"))
     bot.remove_command(bot.get_slash_command("calendrier"))
+    bot.remove_command(bot.get_slash_command("test"))

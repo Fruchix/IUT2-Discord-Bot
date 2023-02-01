@@ -53,3 +53,6 @@ con.commit()
 
 cur.execute("CREATE TABLE IF NOT EXISTS salles_iut2(nom, etage, batiment, PRIMARY KEY(nom))")
 cur.execute("INSERT INTO salles_iut2 SELECT DISTINCT * FROM salles_prov ORDER BY nom")
+con.commit()
+
+con.close()
