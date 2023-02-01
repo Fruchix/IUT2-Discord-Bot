@@ -68,7 +68,7 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
     )
     return
 
-
+# TODO : remove this function
 @lightbulb.command("test", "Test de fonction")
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def test(ctx: lightbulb.context.SlashContext):
