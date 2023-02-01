@@ -3,6 +3,7 @@ import os
 import hikari
 import lightbulb
 import miru
+from lightbulb.ext import tasks
 from dotenv import load_dotenv
 from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
 from IUT2_Discord_Bot.utils.json_utils import remove_element_json_array
@@ -16,6 +17,7 @@ bot = lightbulb.BotApp(
     default_enabled_guilds=list(map(int, os.getenv("GUILD_ID").split(","))),
 )
 miru.load(bot)
+tasks.load(bot)
 
 # récupération des messages dont il faut écouter les interactions
 @bot.listen()
