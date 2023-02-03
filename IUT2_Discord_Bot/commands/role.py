@@ -31,7 +31,7 @@ async def selecteur_role(ctx: lightbulb.context.SlashContext):
         'guild_id': ctx.guild_id
     }
 
-    append_element_json_array(selector, "selectors", "IUT2_Discord_Bot/guilds/selectors.json")
+    append_element_json_array(selector, "selectors", "IUT2_Discord_Bot/resources/selectors.json")
 
     return
 

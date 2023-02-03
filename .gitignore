@@ -1,4 +1,4 @@
 # Project exclude paths
 /.env
 /IUT2_Discord_Bot/resources/agenda.png
-/IUT2_Discord_Bot/guilds/selectors.json
+/IUT2_Discord_Bot/resources/selectors.json

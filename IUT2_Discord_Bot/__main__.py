@@ -22,7 +22,7 @@ tasks.load(bot)
 # récupération des messages dont il faut écouter les interactions
 @bot.listen()
 async def startup_views(event: hikari.StartedEvent) -> None:
-    with open("IUT2_Discord_Bot/guilds/selectors.json", "r") as file:
+    with open("IUT2_Discord_Bot/resources/selectors.json", "r") as file:
         data = json.load(file)
 
     if not data["selectors"]:
@@ -38,7 +38,7 @@ async def startup_views(event: hikari.StartedEvent) -> None:
             view.start_listener(message=selector["id"])
         except:
             # remove selectors that do not exists anymore from the json list of selectors
-            remove_element_json_array(index, "selectors", "IUT2_Discord_Bot/guilds/selectors.json")
+            remove_element_json_array(index, "selectors", "IUT2_Discord_Bot/resources/selectors.json")
     return
 
 # load les fichiers python contenant des commandes
