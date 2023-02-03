@@ -41,5 +41,5 @@ def generate_agenda(resource: int, sem_decal: int):
 
     current_agenda = draw_edt(ical=ical_agenda)
 
-    current_agenda.save("IUT2_Discord_Bot/edt/agenda.png")
+    current_agenda.save("IUT2_Discord_Bot/resources/agenda.png")
 
