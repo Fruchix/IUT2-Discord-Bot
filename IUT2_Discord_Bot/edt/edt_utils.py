@@ -1,4 +1,5 @@
 import datetime
+import ics
 
 # dictionnaires contenant les groupes et leur identifiant de "resources" dans l'url de ADE
 # chaque identifiant désigne un emploi du temps
@@ -92,3 +93,43 @@ def select_semaine(nb_sem_decale: int) -> datetime.date:
     sem_select = select_current_semaine() + datetime.timedelta(7 * nb_sem_decale)
 
     return sem_select
+
+
+def ical_to_list(ical: ics.icalendar.Calendar) -> list:
+    """Extraire les cours d'un fichier Ical et les stocke dans une liste.
+    Ce fichier doit correspondre à un emploi du temps de l'iut2 de Grenoble.
+
+    Chaque événement est stocké sous la forme d'un dictionnaire de la forme :
+    {
+        "titre": string,
+        "profs": [str, str, ...],
+        "groupes": [str, str, ..],
+        "salles": [str, str, ...],
+        "date_debut": datetime.datetime,
+        "date_fin": datetime.datetime,
+        "duree_event": datetime.timedelta
+    }
+
+    :param ical: le fichier ical contenant l'emploi du temps
+    :return: liste des cours
+    """
+
+    liste_cours = []
+
+    for event in ical.events:
+        profs = [p for p in event.description.split("\n") if not p.__contains__("INFO") and p != ''
+                 and not p.__contains__("Exporté")]
+        cours = {
+            "titre": event.name,
+            "profs": profs,
+            "groupes": [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in
+                        event.description.split("\n") if g != '' and not g.__contains__("Exporté") and g not in profs],
+            "salles": [s[5:] if s.__contains__("IUT2-") else s for s in event.location.split(",") if s != ''],
+            "date_debut": event.begin,
+            "date_fin": event.end,
+            "duree_event": event.duration
+        }
+
+        liste_cours.append(cours)
+
+    return liste_cours
