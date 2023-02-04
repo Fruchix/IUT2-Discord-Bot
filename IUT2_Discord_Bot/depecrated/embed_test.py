@@ -6,7 +6,7 @@ import lightbulb
 async def embed_test(ctx : lightbulb.context.SlashContext) -> None :
 
     myEmbed = hikari.Embed(title="Test Embed", color=hikari.Color.of((33, 186, 217)))
-    myEmbed.set_image("edt/agenda.png")
+    myEmbed.set_image("IUT2_Discord_Bot/resources/images/agenda.png")
 
     await ctx.respond(myEmbed)
     return

@@ -99,7 +99,7 @@ def ical_to_list(ical: ics.icalendar.Calendar) -> list:
     """Extraire les cours d'un fichier Ical et les stocke dans une liste.
     Ce fichier doit correspondre à un emploi du temps de l'iut2 de Grenoble.
 
-    Chaque événement est stocké sous la forme d'un dictionnaire de la forme :
+    Chaque cours est stocké sous la forme d'un dictionnaire de la forme :
     {
         "titre": string,
         "profs": [str, str, ...],

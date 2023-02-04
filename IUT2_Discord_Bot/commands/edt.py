@@ -49,7 +49,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         )
         .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " + str((select_semaine((ctx.options.semaine)) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
-        .set_image("IUT2_Discord_Bot/resources/agenda.png")
+        .set_image("IUT2_Discord_Bot/resources/images/agenda.png")
     )
     return
 
@@ -64,7 +64,7 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
             title="Calendrier 2022/2023",
             color=hikari.Color.of((33, 186, 217))
         )
-        .set_image("IUT2_Discord_Bot/resources/calendrier-2022-2023.png")
+        .set_image("IUT2_Discord_Bot/resources/images/calendrier-2022-2023.png")
     )
     return
 

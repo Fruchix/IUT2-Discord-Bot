@@ -1,4 +1,3 @@
-import ics
 import datetime
 from PIL import Image, ImageDraw, ImageFont
 
@@ -31,18 +30,6 @@ def draw_event(agenda_picture, cours: dict) -> None:
         "duree_event": datetime.timedelta
     }
     """
-    # récupération des données importantes à dessiner sur l'agenda
-    # titre = event.name
-    # profs = [p for p in event.description.split("\n") if
-    #          not p.__contains__("INFO") and p != '' and not p.__contains__("Exporté")]
-    # groupes = [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in event.description.split("\n")
-    #            if g != '' and not g.__contains__("Exporté") and g not in profs]
-    # salles = [s[5:] if s.__contains__("IUT2-") else s for s in
-    #           event.location.split(",") if s != '']
-    # date_debut = event.begin
-    # duree_event = event.duration
-
-
 
     # déclaration d'un objet de dessin
     d = ImageDraw.Draw(agenda_picture, "RGB")
@@ -59,7 +46,7 @@ def draw_event(agenda_picture, cours: dict) -> None:
 
     # recalage des heures de début de cours à partir de 0 pour déterminer y0 ->
     # y0 : produit heure et hauteur d'une cellule (125px) + marge supérieur (50px)
-    y0 = (cours["date_debut"].to('Europe/Paris').datetime.hour + cours["date_debut"].to('Europe/Paris').datetime.minute / 60 - 8) * 125 + 50
+    y0 = (cours["date_debut"].hour + cours["date_debut"].minute / 60 - 8) * 125 + 50
 
     # x1 : x0 + largeur colonne + 1 pixel d'esthétisme
     x1 = x0 + 226
@@ -159,8 +146,8 @@ def draw_edt(liste_cours: list) -> Image:
     """
 
     # détermination de l'heure de fin maximale d'un cours de cette semaine
-    heure_fin_cours_max = max([cours["date_fin"].to("Europe/Paris").datetime.hour +
-                               cours["date_fin"].to("Europe/Paris").datetime.minute / 60
+    heure_fin_cours_max = max([cours["date_fin"].hour +
+                               cours["date_fin"].minute / 60
                                for cours in liste_cours])
 
     # définition de la taille de l'image : plus l'heure de fin maximale d'un cours est grande plus l'image l'est aussi
