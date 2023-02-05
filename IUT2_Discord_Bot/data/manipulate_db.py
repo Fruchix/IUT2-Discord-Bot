@@ -273,12 +273,12 @@ def update_db():
 
     connect = sqlite3.connect("IUT2_Discord_Bot/resources/edt.db")
     cursor = connect.cursor()
-    cursor.execute("DELETE FROM cours")
-    connect.commit()
 
     print("Inserting new values in table cours...")
-    for semaine in range(-10, 10):
-        for id_resource in id_edt_groupe.values():
+    for id_resource in id_edt_groupe.values():
+        cursor.execute("DELETE FROM cours WHERE id_edt = ?", [id_resource])
+        connect.commit()
+        for semaine in range(-10, 10):
             print(f"Requesting edt={id_resource} on week={semaine}")
             insert_ical(resource=id_resource, ical_agenda=load_ical(id_resource, select_semaine(semaine)))
 
