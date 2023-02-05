@@ -1,6 +1,8 @@
 import datetime
 from PIL import Image, ImageDraw, ImageFont
 
+from IUT2_Discord_Bot.data.manipulate_db import read_liste_cours
+
 COURS_TEXT_COLOR = (54, 57, 62)
 
 CADRE_COLOR = (30, 33, 36)
@@ -13,7 +15,7 @@ BG_COURS_COLOR = (55, 196, 224)
 # (48, 199, 40, 200)
 
 
-def draw_event(agenda_picture, cours: dict) -> None:
+def draw_cours(agenda_picture, cours: dict) -> None:
     """Dessiner un évènement (un cours) sur l'image de l'agenda.
 
     :param agenda_picture: l'image de l'agenda  sur laquelle dessiner
@@ -136,7 +138,7 @@ def draw_event(agenda_picture, cours: dict) -> None:
                )
 
 
-def draw_edt(liste_cours: list) -> Image:
+def draw_liste_cours(liste_cours: list) -> Image:
     """
     Génère une image de l'emploi du temps fournit.
     Cet edt doit s'étendre sur une semaine de cours entière.
@@ -209,6 +211,21 @@ def draw_edt(liste_cours: list) -> Image:
                )
 
     for cours in liste_cours:
-        draw_event(agenda_picture=agenda_picture, cours=cours)
+        draw_cours(agenda_picture=agenda_picture, cours=cours)
 
     return agenda_picture
+
+
+def draw_agenda(resource: int, semaine_decal: int) -> None:
+    """
+    Générer l'image d'un agenda et la sauver.
+
+    :param resource: l'identifiant "resources" d'ADE
+    :param semaine_decal: le décalage de semaine à partir de celle actuelle
+    """
+
+    liste_cours = read_liste_cours(id_edt=resource, semaine_decal=semaine_decal)
+
+    current_agenda = draw_liste_cours(liste_cours=liste_cours)
+
+    current_agenda.save("IUT2_Discord_Bot/resources/images/agenda.png")

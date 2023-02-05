@@ -66,7 +66,7 @@ def auto_select_edt(liste_roles):
         if role.id in list(id_edt_role.keys()):
             return id_edt_role[role.id]
     # si aucun rôle de l'utilisateur n'est dans la liste de rôles associés à des emplois du temps
-    raise ValueError
+    return -1
 
 
 def select_current_semaine() -> datetime.date:
@@ -95,7 +95,7 @@ def select_semaine(nb_sem_decale: int) -> datetime.date:
     return sem_select
 
 
-def ical_to_list(ical: ics.icalendar.Calendar) -> list:
+def ical_to_list(ical: ics.icalendar.Calendar, short_format: bool = False) -> list:
     """Extraire les cours d'un fichier Ical et les stocke dans une liste.
     Ce fichier doit correspondre à un emploi du temps de l'iut2 de Grenoble.
 
@@ -111,25 +111,33 @@ def ical_to_list(ical: ics.icalendar.Calendar) -> list:
     }
 
     :param ical: le fichier ical contenant l'emploi du temps
+    :param short_format: si True alors le format ne contient que les informations de salles, heure de début et de fin
     :return: liste des cours
     """
 
     liste_cours = []
 
     for event in ical.events:
-        profs = [p for p in event.description.split("\n") if not p.__contains__("INFO") and p != ''
-                 and not p.__contains__("Exporté")]
-        cours = {
-            "titre": event.name,
-            "profs": profs,
-            "groupes": [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in
-                        event.description.split("\n") if g != '' and not g.__contains__("Exporté") and g not in profs],
-            "salles": [s[5:] if s.__contains__("IUT2-") else s for s in event.location.split(",") if s != ''],
-            "date_debut": event.begin,
-            "date_fin": event.end,
-            "duree_event": event.duration
-        }
+        if not short_format:
+            profs = [p for p in event.description.split("\n") if not p.__contains__("INFO") and p != ''
+                     and not p.__contains__("Exporté")]
 
+            cours = {
+                "titre": event.name,
+                "profs": profs,
+                "groupes": [g[5:] if g.__contains__("INFO1") or g.__contains__("INFO2") else g for g in
+                            event.description.split("\n") if g != '' and not g.__contains__("Exporté") and g not in profs],
+                "salles": [s[5:] if s.__contains__("IUT2-") else s for s in event.location.split(",") if s != ''],
+                "date_debut": event.begin,
+                "date_fin": event.end,
+                "duree_event": event.duration
+            }
+        else:
+            cours = {
+                "salles": [salle for salle in event.location.split(",")],
+                "date_debut": event.begin,
+                "date_fin": event.end
+            }
         liste_cours.append(cours)
 
     return liste_cours

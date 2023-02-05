@@ -1,10 +1,10 @@
 import datetime
 import hikari
 import lightbulb
-import sqlite3
 
-from IUT2_Discord_Bot.edt.get_agenda import generate_agenda, select_semaine
-from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe
+from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
+from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe, select_semaine
+from IUT2_Discord_Bot.data.manipulate_db import read_liste_salles_libres
 
 
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
@@ -12,7 +12,6 @@ from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_ed
 @lightbulb.command("edt", "Afficher un emploi du temps")
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def edt(ctx: lightbulb.context.SlashContext) -> None:
-
     # si un groupe de TP a été passé en paramètre,
     # alors on récupère l'identifiant de l'edt correspondant dans le dictionnaire id_edt_groupe,
     # sinon on auto-sélectionne l'edt via les rôles de l'utilisateur
@@ -26,9 +25,9 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
             await ctx.respond("Veuillez préciser le groupe souhaité.")
             return
         else:
-            try:
-                id_groupe_tp = auto_select_edt(ctx.member.get_roles())
-            except ValueError:
+            id_groupe_tp = auto_select_edt(ctx.member.get_roles())
+
+            if id_groupe_tp == -1:
                 await ctx.respond("Vous n'avez pas de rôle de groupe : veuillez préciser le groupe souhaité.")
                 return
 
@@ -37,21 +36,64 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         await ctx.respond("Aucun groupe TP trouvé dans vos rôles." )
         return
 
-    # génération du fichier agenda.png
-    generate_agenda(id_groupe_tp, ctx.options.semaine)
+    # pré-génération de l'embed
+    embed_edt = hikari.Embed(
+        color=hikari.Color.of((33, 186, 217))
+    )\
+        .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)\
+        .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " +
+                   str((select_semaine(ctx.options.semaine) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
 
-    # envoi du fichier agenda.png
+    try:
+        # génération du fichier agenda.png
+        draw_agenda(id_groupe_tp, ctx.options.semaine)
 
-    await ctx.respond(
-        hikari.Embed(
-            title="Emploi du temps",
-            color=hikari.Color.of((33, 186, 217))
-        )
-        .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)
-        .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " + str((select_semaine((ctx.options.semaine)) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
-        .set_image("IUT2_Discord_Bot/resources/images/agenda.png")
+        embed_edt.title = "Emploi du temps"
+        embed_edt.set_image("IUT2_Discord_Bot/resources/images/agenda.png")
+    except ValueError:
+        embed_edt.title = "Aucun emploi du temps trouvé"
+
+    await ctx.respond(embed_edt)
+
+
+@lightbulb.option("duree_en_h", "La durée pendant laquelle les salles doivent être disponibles (en heures)", type=float)
+@lightbulb.option("heure", "Heure où chercher, au format \"14:26\"", type=str)
+@lightbulb.option("jour", "Jour où chercher", choices=["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"])
+@lightbulb.command("salles_libres", "Afficher les salles libres à un certain créneau")
+@lightbulb.implements(lightbulb.commands.SlashCommand)
+async def salles_libres(ctx: lightbulb.context.SlashContext):
+    jours = {
+        "Lundi": 0,
+        "Mardi": 1,
+        "Mercredi": 2,
+        "Jeudi": 3,
+        "Vendredi": 4
+    }
+
+    date = select_semaine(0) + datetime.timedelta(jours[ctx.options.jour])
+
+    salles = read_liste_salles_libres(
+        datetime.datetime.strptime(str(date) + "T" + ctx.options.heure + ":00+01:00", "%Y-%m-%dT%H:%M:%S%z"), datetime.timedelta(hours=float(ctx.options.duree_en_h)))
+
+    my_embed = hikari.Embed(
+        title="Salles libres",
+        color=hikari.Color.of((33, 186, 217))
     )
-    return
+
+    etages = {
+        "3": "Etage 3",
+        "2": "Etage 2",
+        "1": "Etage 1",
+        "0": "Rez de chaussée",
+        "S": "Sous-sol"
+    }
+
+    for key, value in etages.items():
+        liste_salles = "\n".join([s[0] for s in salles if s[1] == key])
+
+        my_embed.add_field(value, liste_salles if liste_salles else "Aucune salle libre")
+
+    await ctx.respond(my_embed)
 
 
 @lightbulb.command("calendrier", "Afficher le calendrier de l'année.")
@@ -68,31 +110,14 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
     )
     return
 
-# TODO : remove this function
-@lightbulb.command("test", "Test de fonction")
-@lightbulb.implements(lightbulb.commands.SlashCommand)
-async def test(ctx: lightbulb.context.SlashContext):
-    # Connection object on the database
-    con = sqlite3.connect("IUT2_Discord_Bot/resources/edt.db")
-
-    # cursor object
-    cur = con.cursor()
-
-    cur.execute("SELECT * FROM salles_iut2")
-
-    res = cur.fetchall()
-
-    con.close()
-    await ctx.respond(res)
-
 
 def load(bot: lightbulb.BotApp) -> None:
     bot.command(edt)
     bot.command(calendrier)
-    bot.command(test)
+    bot.command(salles_libres)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
     bot.remove_command(bot.get_slash_command("edt"))
     bot.remove_command(bot.get_slash_command("calendrier"))
-    bot.remove_command(bot.get_slash_command("test"))
+    bot.remove_command(bot.get_slash_command("salles_libres"))
