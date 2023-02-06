@@ -1,6 +1,6 @@
-import datetime
 import hikari
 import lightbulb
+from datetime import datetime, timedelta
 
 from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe, select_semaine
@@ -42,7 +42,9 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
     )\
         .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)\
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " +
-                   str((select_semaine(ctx.options.semaine) + datetime.timedelta(4)).strftime("%d-%m-%Y")), inline=True)
+                   str((select_semaine(ctx.options.semaine) + timedelta(4)).strftime("%d-%m-%Y")), inline=True)\
+        .set_footer(
+            "📌 Stolen from https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC")
 
     try:
         # génération du fichier agenda.png
@@ -70,15 +72,26 @@ async def salles_libres(ctx: lightbulb.context.SlashContext):
         "Vendredi": 4
     }
 
-    date = select_semaine(0) + datetime.timedelta(jours[ctx.options.jour])
+    # récupération de la date au format YYYY-mm-dd
+    sl_date = select_semaine(0) + timedelta(jours[ctx.options.jour])
 
-    salles = read_liste_salles_libres(
-        datetime.datetime.strptime(str(date) + "T" + ctx.options.heure + ":00+01:00", "%Y-%m-%dT%H:%M:%S%z"), datetime.timedelta(hours=float(ctx.options.duree_en_h)))
+    # récupération du datetime au format YYYY-mm-ddTHH:MM:SS+zz:zz
+    # zz:zz étant le décallage horaire par rapport à l'UTC
+    sl_datetime = datetime.strptime(str(sl_date) + "T" + ctx.options.heure + ":00+01:00", "%Y-%m-%dT%H:%M:%S%z")
+
+    # temps durant lequel les salles doivent êter disponibles
+    duree_timedelta = timedelta(hours=float(ctx.options.duree_en_h))
+
+    # récupération des salles libres sur le créneau demandé
+    salles = read_liste_salles_libres(sl_datetime, duree_timedelta)
+
+    formatted_date = sl_datetime.strftime('%d/%m/%y de %H:%M à ') + (sl_datetime + duree_timedelta).strftime("%H:%M")
 
     my_embed = hikari.Embed(
-        title="Salles libres",
+        title=f"Salles libres le {formatted_date}",
         color=hikari.Color.of((33, 186, 217))
-    )
+    ).set_footer(
+        "📌 Stolen from https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC")
 
     etages = {
         "3": "Etage 3",
@@ -88,6 +101,7 @@ async def salles_libres(ctx: lightbulb.context.SlashContext):
         "S": "Sous-sol"
     }
 
+    # affichage des salles libres par étage (ajout d'un field par étage dans l'embed retourné)
     for key, value in etages.items():
         liste_salles = "\n".join([s[0] for s in salles if s[1] == key])
 
