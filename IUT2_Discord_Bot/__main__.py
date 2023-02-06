@@ -36,7 +36,8 @@ async def startup_views(event: hikari.StartedEvent) -> None:
 
             # load the view and its listener
             view = get_role_view(selector["guild_id"])
-            view.start_listener(message=selector["id"])
+            print(view)
+            await view.start(message=selector["id"])
         except:
             # remove selectors that do not exists anymore from the json list of selectors
             remove_element_json_array(index, "selectors", "IUT2_Discord_Bot/resources/selectors.json")
