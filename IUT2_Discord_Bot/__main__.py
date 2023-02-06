@@ -16,6 +16,7 @@ bot = lightbulb.BotApp(
     prefix="!",
     intents=hikari.Intents.ALL_UNPRIVILEGED | hikari.Intents.MESSAGE_CONTENT,
     default_enabled_guilds=list(map(int, os.getenv("GUILD_ID").split(","))),
+    help_slash_command=True,
 )
 miru.install(bot)
 tasks.load(bot)

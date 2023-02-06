@@ -6,7 +6,10 @@ from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe, select_semaine
 from IUT2_Discord_Bot.data.manipulate_db import read_liste_salles_libres
 
+time_plugin = lightbulb.Plugin("TimePlugin", "Commandes aidant à la gestion du temps.")
 
+
+@time_plugin.command
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
 @lightbulb.option("semaine", "La semaine souhaitée (0 = semaine actuelle, 1 = semaine suivante, -1 = semaine précédente, ...)", type=int, default=0, required=False)
 @lightbulb.command("edt", "Afficher un emploi du temps")
@@ -58,6 +61,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
     await ctx.respond(embed_edt)
 
 
+@time_plugin.command
 @lightbulb.option("duree_en_h", "La durée pendant laquelle les salles doivent être disponibles (en heures)", type=float)
 @lightbulb.option("heure", "Heure où chercher, au format \"14:26\"", type=str)
 @lightbulb.option("jour", "Jour où chercher", choices=["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"])
@@ -110,6 +114,7 @@ async def salles_libres(ctx: lightbulb.context.SlashContext):
     await ctx.respond(my_embed)
 
 
+@time_plugin.command
 @lightbulb.command("calendrier", "Afficher le calendrier de l'année.")
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def calendrier(ctx: lightbulb.context.SlashContext):
@@ -126,12 +131,8 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
 
 
 def load(bot: lightbulb.BotApp) -> None:
-    bot.command(edt)
-    bot.command(calendrier)
-    bot.command(salles_libres)
+    bot.add_plugin(time_plugin)
 
 
 def unload(bot: lightbulb.BotApp) -> None:
-    bot.remove_command(bot.get_slash_command("edt"))
-    bot.remove_command(bot.get_slash_command("calendrier"))
-    bot.remove_command(bot.get_slash_command("salles_libres"))
+    bot.remove_plugin(bot.get_plugin("TimePlugin"))
