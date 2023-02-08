@@ -48,12 +48,12 @@ class RoleView1A(miru.View):
         "TP E2": [roles_id.get("E"), roles_id.get("E2")]
     }
 
-    @miru.select(
+    @miru.text_select(
         custom_id="Selecteur_Groupe",
         placeholder="Groupes",
         options=[miru.SelectOption(label=nom_groupe_TP) for nom_groupe_TP in roles_group.keys()] + [miru.SelectOption(label="Aucun")],
     )
-    async def role_select(self, select: miru.Select, ctx: miru.Context) -> None:
+    async def role_select(self, select: miru.TextSelect, ctx: miru.Context) -> None:
         # liste des rôles que l'utilisateur a déjà parmis les ID des roles (A, A1, A2, B, etc)
         liste_roles = [id_role for nom_role, id_role in self.roles_id.items() if id_role in [role.id for role in ctx.member.get_roles()]]
         # suppression des anciens roles de l'utilisateur (ancien groupe TP et TD)
@@ -102,12 +102,12 @@ class RoleView2A(miru.View):
         "TP B12": [roles_id.get("B1"), roles_id.get("B12")],
     }
 
-    @miru.select(
+    @miru.text_select(
         custom_id="Selecteur_Groupe",
         placeholder="Groupes",
         options=[miru.SelectOption(label=nom_groupe_TP) for nom_groupe_TP in roles_group.keys()] + [miru.SelectOption(label="Aucun")],
     )
-    async def role_select(self, select: miru.Select, ctx: miru.Context) -> None:
+    async def role_select(self, select: miru.TextSelect, ctx: miru.Context) -> None:
         # liste des rôles que l'utilisateur a déjà parmis les ID des roles (A, A1, A2, B, etc)
         liste_roles = [id_role for nom_role, id_role in self.roles_id.items() if id_role in [role.id for role in ctx.member.get_roles()]]
         # suppression des anciens roles de l'utilisateur (ancien groupe TP et TD)

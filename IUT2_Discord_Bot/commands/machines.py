@@ -43,29 +43,31 @@ async def etat_machines(ctx: lightbulb.context.SlashContext):
                         " user " if machine[2] == 1 else " users") if machine[1] == "up" else "      ") + "`" for
                     machine in liste_machines if machine[0][7:9] == str(salle))
 
+    embed_machine = hikari.Embed(
+        title=etat,
+        color=hikari.Color.of((255, 87, 51))
+    )
+
+    embed_machine.description = "📌 Stolen from [Intranet Info IUT2](https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php)"
+
     if ctx.options.option != "free":
         await ctx.respond(
-            hikari.Embed(title=etat,
-                         color=hikari.Color.of((255, 87, 51)))
-                .add_field("`Salle 25`", value_field(25), inline=True)
-                .add_field("`Salle 27`", value_field(27), inline=True)
-                .add_field("`Salle 33`", value_field(33), inline=True)
-                .add_field("`Salle 35`", value_field(35), inline=True)
-                .add_field("`Salle 37`", value_field(37), inline=True)
-                .add_field("`Salle 39`", value_field(39), inline=True)
-                .set_footer(
-                "📌 Stolen from https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php")
+            embed_machine
+            .add_field("`Salle 25`", value_field(25), inline=True)
+            .add_field("`Salle 27`", value_field(27), inline=True)
+            .add_field("`Salle 33`", value_field(33), inline=True)
+            .add_field("`Salle 35`", value_field(35), inline=True)
+            .add_field("`Salle 37`", value_field(37), inline=True)
+            .add_field("`Salle 39`", value_field(39), inline=True)
         )
     else:
         await ctx.respond(
-            hikari.Embed(title=etat,
-                         color=hikari.Color.of((255, 87, 51)))
-                .add_field("Machines les moins occupées",
-                           "\n".join("`" + machine[0] + " " + machine[1] + " " + str(machine[2]) + (
-                               " user" if machine[2] == 1 else " users") + "`" for
-                                           machine in sorted(liste_machines, key=lambda x: x[2])[:5])
-                           )
-                .set_footer("📌 Stolen from https://www-info.iut2.univ-grenoble-alpes.fr/intranet/informations/cellule-info/etat-stations.php")
+            embed_machine
+            .add_field("Machines les moins occupées",
+                       "\n".join("`" + machine[0] + " " + machine[1] + " " + str(machine[2])
+                                 + (" user" if machine[2] == 1 else " users") + "`" for
+                                 machine in sorted(liste_machines, key=lambda x: x[2])[:5])
+                       )
         )
 
 

@@ -1,6 +1,7 @@
 import hikari
 import lightbulb
 from datetime import datetime, timedelta
+from miru.ext import nav
 
 from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe, select_semaine
@@ -13,7 +14,7 @@ time_plugin = lightbulb.Plugin("TimePlugin", "Commandes aidant à la gestion du 
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
 @lightbulb.option("semaine", "La semaine souhaitée (0 = semaine actuelle, 1 = semaine suivante, -1 = semaine précédente, ...)", type=int, default=0, required=False)
 @lightbulb.command("edt", "Afficher un emploi du temps")
-@lightbulb.implements(lightbulb.commands.SlashCommand)
+@lightbulb.implements(lightbulb.SlashCommand)
 async def edt(ctx: lightbulb.context.SlashContext) -> None:
     # si un groupe de TP a été passé en paramètre,
     # alors on récupère l'identifiant de l'edt correspondant dans le dictionnaire id_edt_groupe,
@@ -46,9 +47,8 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)\
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " +
                    str((select_semaine(ctx.options.semaine) + timedelta(4)).strftime("%d-%m-%Y")), inline=True)\
-        .set_footer(
-            "📌 Stolen from https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC")
 
+    embed_edt.description = "📌 Stolen from [ADE](https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC)"
     try:
         # génération du fichier agenda.png
         draw_agenda(id_groupe_tp, ctx.options.semaine)
@@ -94,8 +94,9 @@ async def salles_libres(ctx: lightbulb.context.SlashContext):
     my_embed = hikari.Embed(
         title=f"Salles libres le {formatted_date}",
         color=hikari.Color.of((33, 186, 217))
-    ).set_footer(
-        "📌 Stolen from https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC")
+    )
+
+    my_embed.description = "📌 Stolen from [ADE](https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC)"
 
     etages = {
         "3": "Etage 3",
