@@ -274,7 +274,6 @@ def update_db():
     connect = sqlite3.connect("IUT2_Discord_Bot/resources/edt.db")
     cursor = connect.cursor()
 
-    print("Inserting new values in table cours...")
     for id_resource in id_edt_groupe.values():
         cursor.execute("DELETE FROM cours WHERE id_edt = ?", [id_resource])
         connect.commit()
@@ -285,7 +284,6 @@ def update_db():
     cursor.execute("DELETE FROM salles_occupees")
     connect.commit()
 
-    print("Inserting new values in table salles_occupees...")
     resource_tout_iut = 44676
     insert_ical(resource=resource_tout_iut, ical_agenda=load_ical(resource_tout_iut, select_semaine(0)))
     print("Update finished !")
