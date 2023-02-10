@@ -275,10 +275,15 @@ def update_db():
     cursor = connect.cursor()
 
     for id_resource in id_edt_groupe.values():
+
+        try:
+            load_ical(id_resource, select_semaine(0))
+        except:
+            continue
+
         cursor.execute("DELETE FROM cours WHERE id_edt = ?", [id_resource])
         connect.commit()
         for semaine in range(-10, 10):
-            print(f"Requesting edt={id_resource} on week={semaine}")
             insert_ical(resource=id_resource, ical_agenda=load_ical(id_resource, select_semaine(semaine)))
 
     cursor.execute("DELETE FROM salles_occupees")
