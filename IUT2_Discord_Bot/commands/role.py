@@ -33,8 +33,6 @@ async def selecteur_role(ctx: lightbulb.context.SlashContext):
 
     append_element_json_array(selector, "selectors", "IUT2_Discord_Bot/resources/selectors.json")
 
-    return
-
 
 def load(bot: lightbulb.BotApp) -> None:
     bot.command(selecteur_role)

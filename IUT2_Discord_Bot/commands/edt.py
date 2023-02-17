@@ -1,7 +1,6 @@
 import hikari
 import lightbulb
 from datetime import datetime, timedelta
-from miru.ext import nav
 
 from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
 from IUT2_Discord_Bot.edt.edt_utils import auto_select_edt, liste_groupes, id_edt_groupe, select_semaine
@@ -128,7 +127,6 @@ async def calendrier(ctx: lightbulb.context.SlashContext):
         )
         .set_image("IUT2_Discord_Bot/resources/images/calendrier-2022-2023.png")
     )
-    return
 
 
 def load(bot: lightbulb.BotApp) -> None:
