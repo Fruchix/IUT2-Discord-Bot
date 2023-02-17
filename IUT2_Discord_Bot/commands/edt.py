@@ -1,5 +1,6 @@
 import hikari
 import lightbulb
+from miru.ext import nav
 from datetime import datetime, timedelta
 
 from IUT2_Discord_Bot.edt.draw_agenda import draw_agenda
@@ -45,7 +46,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
     )\
         .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)\
         .add_field("Semaine", "Du " + str(select_semaine(ctx.options.semaine).strftime("%d-%m-%Y")) + " au " +
-                   str((select_semaine(ctx.options.semaine) + timedelta(4)).strftime("%d-%m-%Y")), inline=True)\
+                   str((select_semaine(ctx.options.semaine) + timedelta(4)).strftime("%d-%m-%Y")), inline=True)
 
     embed_edt.description = "📌 Stolen from [ADE](https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC)"
     try:
@@ -58,6 +59,71 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         embed_edt.title = "Aucun emploi du temps trouvé"
 
     await ctx.respond(embed_edt)
+
+
+@time_plugin.command
+@lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
+@lightbulb.command("edt_navigator", "Afficher l'emploi du temps dans un navigateur, permettant de changer de semaine et de groupe.", auto_defer=True)
+@lightbulb.implements(lightbulb.SlashCommand, lightbulb.PrefixCommand)
+async def edt_navigator(ctx: lightbulb.context.SlashContext):
+    # si un groupe de TP a été passé en paramètre,
+    # alors on récupère l'identifiant de l'edt correspondant dans le dictionnaire id_edt_groupe,
+    # sinon on auto-sélectionne l'edt via les rôles de l'utilisateur
+    if ctx.options.groupe != "":
+        id_groupe_tp = id_edt_groupe[ctx.options.groupe]
+    else:
+        # si la commande est entrée dans des messages privés
+        # alors envoi d'un message d'erreur et fin de la fonction
+        # sinon sélection automatique de l'edt via les rôles de l'utilisateur
+        if ctx.guild_id is None:
+            await ctx.respond("Veuillez préciser le groupe souhaité.")
+            return
+        else:
+            id_groupe_tp = auto_select_edt(ctx.member.get_roles())
+
+            if id_groupe_tp == -1:
+                await ctx.respond("Vous n'avez pas de rôle de groupe : veuillez préciser le groupe souhaité.")
+                return
+
+    # vérification qu'un rôle a été trouvé
+    if id_groupe_tp is None:
+        await ctx.respond("Aucun groupe TP trouvé dans vos rôles." )
+        return
+
+    pages = []
+    for semaine in range(-10, 10):
+        # pré-génération de l'embed
+        embed_edt = hikari.Embed(
+            color=hikari.Color.of((33, 186, 217))
+        )\
+            .add_field("Groupe", " ".join(g for g in id_edt_groupe.keys() if id_edt_groupe[g] == id_groupe_tp), inline=True)\
+            .add_field("Semaine", "Du " + str(select_semaine(semaine).strftime("%d-%m-%Y")) + " au " + str((select_semaine(semaine) + timedelta(4)).strftime("%d-%m-%Y")), inline=True)
+        embed_edt.description = "📌 Stolen from [ADE](https://redirect.univ-grenoble-alpes.fr/ADE_ETUDIANTS_ETC)"
+        try:
+            # génération du fichier agenda.png
+            draw_agenda(id_groupe_tp, semaine)
+
+            embed_edt.title = "Emploi du temps"
+            embed_edt.set_image(f"IUT2_Discord_Bot/resources/images/agenda-{semaine}.png")
+        except ValueError:
+            embed_edt.title = "Aucun emploi du temps trouvé"
+
+        pages.append(embed_edt)
+
+    buttons = [
+        nav.FirstButton(),
+        nav.PrevButton(),
+        nav.IndicatorButton(),
+        nav.NextButton(),
+        nav.LastButton()
+    ]
+
+    navigator = nav.NavigatorView(pages=pages, buttons=buttons)
+
+    await ctx.respond("Edt navigator:")
+    await navigator.send(ctx.channel_id, start_at=10)
+
+
 
 
 @time_plugin.command

@@ -228,4 +228,4 @@ def draw_agenda(resource: int, semaine_decal: int) -> None:
 
     current_agenda = draw_liste_cours(liste_cours=liste_cours)
 
-    current_agenda.save("IUT2_Discord_Bot/resources/images/agenda.png")
+    current_agenda.save(f"IUT2_Discord_Bot/resources/images/agenda-{semaine_decal}.png")
