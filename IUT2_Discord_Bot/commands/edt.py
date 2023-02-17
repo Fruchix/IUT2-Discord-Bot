@@ -13,7 +13,7 @@ time_plugin = lightbulb.Plugin("TimePlugin", "Commandes aidant à la gestion du 
 @time_plugin.command
 @lightbulb.option("groupe", "Le groupe dont il faut récupérer l'emploi du temps", choices=liste_groupes, type=str, default="", required=False)
 @lightbulb.option("semaine", "La semaine souhaitée (0 = semaine actuelle, 1 = semaine suivante, -1 = semaine précédente, ...)", type=int, default=0, required=False)
-@lightbulb.command("edt", "Afficher un emploi du temps")
+@lightbulb.command("edt", "Afficher un emploi du temps", auto_defer=True)
 @lightbulb.implements(lightbulb.SlashCommand)
 async def edt(ctx: lightbulb.context.SlashContext) -> None:
     # si un groupe de TP a été passé en paramètre,
@@ -130,7 +130,7 @@ async def edt_navigator(ctx: lightbulb.context.SlashContext):
 @lightbulb.option("duree_en_h", "La durée pendant laquelle les salles doivent être disponibles (en heures)", type=float)
 @lightbulb.option("heure", "Heure où chercher, au format \"14:26\"", type=str)
 @lightbulb.option("jour", "Jour où chercher", choices=["Lundi", "Mardi", "Mercredi", "Jeudi", "Vendredi"])
-@lightbulb.command("salles_libres", "Afficher les salles libres à un certain créneau")
+@lightbulb.command("salles_libres", "Afficher les salles libres à un certain créneau", auto_defer=True)
 @lightbulb.implements(lightbulb.commands.SlashCommand)
 async def salles_libres(ctx: lightbulb.context.SlashContext):
     jours = {
