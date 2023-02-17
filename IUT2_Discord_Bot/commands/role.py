@@ -1,7 +1,7 @@
 import hikari
 import lightbulb
 
-from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
+from IUT2_Discord_Bot.components.RoleViews import get_role_view
 from IUT2_Discord_Bot.utils.json_utils import append_element_json_array
 
 

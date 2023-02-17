@@ -5,7 +5,7 @@ import lightbulb
 import miru
 from lightbulb.ext import tasks
 from dotenv import load_dotenv
-from IUT2_Discord_Bot.guilds.RoleViews import get_role_view
+from IUT2_Discord_Bot.components.RoleViews import get_role_view
 from IUT2_Discord_Bot.utils.json_utils import remove_element_json_array
 import IUT2_Discord_Bot.tasks.database
 
