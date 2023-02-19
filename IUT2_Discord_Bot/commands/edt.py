@@ -54,7 +54,7 @@ async def edt(ctx: lightbulb.context.SlashContext) -> None:
         draw_agenda(id_groupe_tp, ctx.options.semaine)
 
         embed_edt.title = "Emploi du temps"
-        embed_edt.set_image("IUT2_Discord_Bot/resources/images/agenda.png")
+        embed_edt.set_image(f"IUT2_Discord_Bot/resources/images/agenda-{ctx.options.semaine}.png")
     except ValueError:
         embed_edt.title = "Aucun emploi du temps trouvé"
 
