@@ -8,7 +8,7 @@ from IUT2_Discord_Bot.edt.edt_utils import id_edt_groupe, select_semaine, ical_t
 from IUT2_Discord_Bot.edt.get_agenda import load_ical
 
 
-def insert_ical(resource: int, ical_agenda: ics.icalendar.Calendar) -> None:
+def insert_ical(resource: int, ical_agenda: ics.icalendar.Calendar) -> bool:
     """Insérer un emploi du temps dans la base de données
     """
 
@@ -19,10 +19,10 @@ def insert_ical(resource: int, ical_agenda: ics.icalendar.Calendar) -> None:
             cours["id_edt"] = resource
 
         # insertion des cours dans la base de données
-        insert_liste_cours(liste_cours=liste_cours)
+        return insert_liste_cours(liste_cours=liste_cours)
     else:
         liste_salles_occupees = ical_to_list(ical_agenda, short_format=True)
-        insert_liste_salles_occupees(liste_salles_occupees=liste_salles_occupees)
+        return insert_liste_salles_occupees(liste_salles_occupees=liste_salles_occupees)
 
 
 def insert_liste_cours(liste_cours: list[dict]) -> bool:
@@ -257,8 +257,7 @@ def create_db():
         "CREATE TABLE cours(id_edt, titre, profs, groupes, salles, date_debut, date_fin, duree_event,"
         " PRIMARY KEY(id_edt, date_debut, date_fin))"
     ).execute(
-        "CREATE TABLE salles_occupees(salles, date_debut, date_fin,"
-        " PRIMARY KEY(salles, date_debut, date_fin))"
+        "CREATE TABLE salles_occupees(salles, date_debut, date_fin)"
     )
     con.commit()
 
@@ -288,7 +287,9 @@ def update_db():
 
     cursor.execute("DELETE FROM salles_occupees")
     connect.commit()
+    connect.close()
 
     resource_tout_iut = 44676
-    insert_ical(resource=resource_tout_iut, ical_agenda=load_ical(resource_tout_iut, select_semaine(0)))
+    res = insert_ical(resource=resource_tout_iut, ical_agenda=load_ical(resource_tout_iut, select_semaine(0)))
+    print("Successfully updated salles_occupees") if res else print("Update failed on salles_occupees")
     print("Update finished !")
