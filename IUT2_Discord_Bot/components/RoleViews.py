@@ -32,7 +32,8 @@ class RoleView1A(miru.View):
         'D2': 994196567252795503,
         'E': 1014167315719401524,
         'E1': 1014167472867397722,
-        'E2': 1014167522364366949
+        'E2': 1014167522364366949,
+        'S0': 1077700243530977372,
     }
 
     roles_group = {
@@ -45,7 +46,8 @@ class RoleView1A(miru.View):
         "TP D1": [roles_id.get("D"), roles_id.get("D1")],
         "TP D2": [roles_id.get("D"), roles_id.get("D2")],
         "TP E1": [roles_id.get("E"), roles_id.get("E1")],
-        "TP E2": [roles_id.get("E"), roles_id.get("E2")]
+        "TP E2": [roles_id.get("E"), roles_id.get("E2")],
+        "SO": [roles_id.get("S0")],
     }
 
     @miru.text_select(
@@ -68,7 +70,8 @@ class RoleView1A(miru.View):
         for id_role in self.roles_group.get(select.values[0]):
             await ctx.member.add_role(id_role)
 
-        await ctx.respond(f"Vous avez désormais les rôles <@&{self.roles_group.get(select.values[0])[0]}> et <@&{self.roles_group.get(select.values[0])[1]}> !", flags=hikari.MessageFlag.EPHEMERAL)
+        added_roles = ", ".join(f"<@&{role}>" for role in self.roles_group.get(select.values[0]))
+        await ctx.respond(f"Vous avez désormais {added_roles} !", flags=hikari.MessageFlag.EPHEMERAL)
 
 
 class RoleView2A(miru.View):
