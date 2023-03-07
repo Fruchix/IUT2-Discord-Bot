@@ -290,6 +290,9 @@ def update_db():
     connect.close()
 
     resource_tout_iut = 44676
-    res = insert_ical(resource=resource_tout_iut, ical_agenda=load_ical(resource_tout_iut, select_semaine(0)))
-    print("Successfully updated salles_occupees") if res else print("Update failed on salles_occupees")
+    try:
+        insert_ical(resource=resource_tout_iut, ical_agenda=load_ical(resource_tout_iut, select_semaine(0)))
+        print("Successfully updated salles_occupees")
+    except:
+        print("Update failed on salles_occupees")
     print("Update finished !")
