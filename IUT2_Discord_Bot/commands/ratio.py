@@ -32,7 +32,7 @@ async def ratio(ctx: lightbulb.MessageContext):
     # création du message à partir de la réponse
     message = await resp.message()
     # démarrage de la vue
-    view.start(message=message)
+    await view.start(message=message)
 
 
 def load(bot: lightbulb.BotApp) -> None:
