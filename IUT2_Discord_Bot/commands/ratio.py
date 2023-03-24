@@ -10,7 +10,6 @@ class SeeMessage(miru.Button):
         return
 
 
-@lightbulb.add_checks(lightbulb.checks.has_roles(1048357379911192657, 1048357830509465700, mode=any))
 @lightbulb.command("ratio", "")
 @lightbulb.implements(lightbulb.commands.MessageCommand)
 async def ratio(ctx: lightbulb.MessageContext):
